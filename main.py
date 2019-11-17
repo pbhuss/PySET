@@ -57,7 +57,7 @@ class SetGameView:
 
     def _load_images(self, scale):
         self._images = {}
-        for path in Path("png").iterdir():
+        for path in Path("img").iterdir():
             if path.is_file() and path.suffix == ".png":
                 name = path.name.split(".")[0]
                 img = pygame.image.load(str(path))
