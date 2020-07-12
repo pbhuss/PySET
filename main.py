@@ -33,14 +33,12 @@ def main():
 
 class SetGameView:
     def __init__(self, scale=DEFAULT_SCALE):
-        self.game = SetGame()
         self._load_images(scale)
         size = (6 * self._card_size[0], 3 * self._card_size[1])
         self._screen = pygame.display.set_mode(size)
         self._scale = scale
         self._show_available = False
-        self.reset_selected()
-        self.redraw()
+        self.new_game()
 
     def new_game(self):
         self.game = SetGame()
@@ -85,8 +83,7 @@ class SetGameView:
         except ValueError:
             return
         else:
-            self._selected = [[False for _ in range(self._ncol)] for _ in range(3)]
-            self._num_selected = 0
+            self.reset_selected()
             self.redraw()
 
     def handle_click(self, event):
