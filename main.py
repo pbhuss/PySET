@@ -1,10 +1,12 @@
+from __future__ import annotations
+
+import itertools
+import random
+from collections.abc import Iterable
+from enum import Enum
 from pathlib import Path
 
 import pygame
-import itertools
-import random
-from enum import Enum
-from typing import Iterable
 
 
 GAME_NAME = "PySET"
@@ -212,12 +214,12 @@ class Card:
         return all(conditions)
 
     def __hash__(self):
-        return hash(tuple((getattr(self, p) for p in self.properties)))
+        return hash(tuple(getattr(self, p) for p in self.properties))
 
     def to_shorthand(self):
-        return "".join((REVERSE_SHORTHAND[getattr(self, p)] for p in self.properties))
+        return "".join(REVERSE_SHORTHAND[getattr(self, p)] for p in self.properties)
 
-    def complement(self, other: "Card"):
+    def complement(self, other: Card):
         if self == other:
             return None
         new_properties = {}
@@ -251,12 +253,12 @@ class State(Enum):
 class SetGame:
     def __init__(self):
         self.state = State.IN_GAME
-        self._draw = set(
+        self._draw = {
             Card(number=number, color=color, shading=shading, symbol=symbol)
             for number, color, shading, symbol in itertools.product(
                 Number, Color, Shading, Symbol
             )
-        )
+        }
         self._active = []
         self._discard = []
 
@@ -264,7 +266,7 @@ class SetGame:
         self._ensure_options()
 
     def _deal(self, n: int, replace_pos: Iterable = None):
-        deal = random.sample(self._draw, n)
+        deal = random.sample(list(self._draw), n)
         if replace_pos is None:
             self._active.extend(deal)
         else:
@@ -306,7 +308,7 @@ class SetGame:
             raise ValueError("cards do not form a set")
 
         self._discard.append(triple)
-        replace_pos = sorted((self._active.index(card) for card in triple))
+        replace_pos = sorted(self._active.index(card) for card in triple)
         for pos in reversed(replace_pos):
             self._active.pop(pos)
 
